@@ -9,5 +9,5 @@ public class FuelManagmentSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FuelManagmentSystemApplication.class, args);
 	}
-
+//jjnkk
 }
