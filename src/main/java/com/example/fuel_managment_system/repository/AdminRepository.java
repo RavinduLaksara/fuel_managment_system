@@ -1,7 +1,7 @@
 // src/main/java/com/example/fuel_b/repository/AdminRepository.java
 package com.example.fuel_managment_system.repository;
 
-import com.example.fuel_b.entity.Admin;
+import com.example.fuel_managment_system.entity.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
