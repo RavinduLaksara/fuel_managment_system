@@ -11,24 +11,39 @@ public class Distributions {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "fuel_station_id", nullable = false)
-    private FuelStation fuelStation;
+    private double fuelAmount;
 
-    @Column(nullable = false)
-    private Double fuelAmount;
-
-    @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    // Getters and Setters
+    @ManyToOne
+    @JoinColumn(name = "fuel_station_id")
+    private FuelStation fuelStation;
 
+    private String fuelType; // Add this line
+
+    // Getters and setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public double getFuelAmount() {
+        return fuelAmount;
+    }
+
+    public void setFuelAmount(double fuelAmount) {
+        this.fuelAmount = fuelAmount;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     public FuelStation getFuelStation() {
@@ -39,19 +54,11 @@ public class Distributions {
         this.fuelStation = fuelStation;
     }
 
-    public Double getFuelAmount() {
-        return fuelAmount;
+    public String getFuelType() {
+        return fuelType;
     }
 
-    public void setFuelAmount(Double fuelAmount) {
-        this.fuelAmount = fuelAmount;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setFuelType(String fuelType) {
+        this.fuelType = fuelType;
     }
 }
