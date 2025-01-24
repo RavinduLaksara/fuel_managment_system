@@ -17,6 +17,16 @@ repositories {
 	mavenCentral()
 }
 
+
+
+
+
+
+
+springBoot {
+	mainClass = 'com.example.fuel_managment_system.FuelManagmentSystemApplication'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-tomcat'
 	implementation 'com.google.zxing:core:3.4.1'
