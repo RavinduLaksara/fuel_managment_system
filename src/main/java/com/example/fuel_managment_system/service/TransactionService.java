@@ -1,8 +1,8 @@
 // src/main/java/com/example/fuel_b/service/TransactionService.java
 package com.example.fuel_managment_system.service;
 
-import com.example.fuel_b.entity.Transaction;
-import com.example.fuel_b.repository.TransactionRepository;
+import com.example.fuel_managment_system.entity.Transaction;
+import com.example.fuel_managment_system.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

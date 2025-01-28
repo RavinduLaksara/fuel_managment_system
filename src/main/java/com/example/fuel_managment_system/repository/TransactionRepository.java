@@ -64,5 +64,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             "GROUP BY FUNCTION('DATE', t.timestamp)")
     List<Object[]> findTotalPumpedEachDayByVehicleId(@Param("sevenDaysAgo") LocalDateTime sevenDaysAgo, @Param("vehicleId") Long vehicleId);
 
+
+    @Query("SELECT t.fuelType, SUM(t.pumpedAmount) FROM Transaction t WHERE t.fuelStation.id = :fuelStationId GROUP BY t.fuelType")
+    List<Object[]> findTotalPumpedAmountByFuelTypeAndFuelStationId(@Param("fuelStationId") Long fuelStationId);
 }
 

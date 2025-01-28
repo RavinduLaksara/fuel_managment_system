@@ -1,11 +1,11 @@
 // src/main/java/com/example/fuel_b/service/VehicleService.java
 package com.example.fuel_managment_system.service;
 
-import com.example.fuel_b.entity.DMT;
-import com.example.fuel_b.entity.Vehicle;
-import com.example.fuel_b.repository.DMTRepository;
-import com.example.fuel_b.repository.VehicleRepository;
-import com.example.fuel_b.util.QRCodeGenerator;
+import com.example.fuel_managment_system.entity.DMT;
+import com.example.fuel_managment_system.entity.Vehicle;
+import com.example.fuel_managment_system.repository.DMTRepository;
+import com.example.fuel_managment_system.repository.VehicleRepository;
+import com.example.fuel_managment_system.util.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
