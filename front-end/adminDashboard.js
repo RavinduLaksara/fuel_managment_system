@@ -48,4 +48,26 @@ const AdminDashboard = () => {
   const [stationsPumpedData, setStationsPumpedData] = useState([]);
   const [threeDaysPumpedData, setThreeDaysPumpedData] = useState({});
   const [sixMonthPumpedData, setSixMonthPumpedData] = useState({});
+
+  // Check authentication and admin status on component mount
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      navigate("/admin-login");
+      return;
+    }
+
+    try {
+      const decodedToken = jwtDecode(token);
+      // Check if token has admin username
+      if (!decodedToken.sub) {
+        console.error("Not authorized as admin");
+        navigate("/admin-login");
+      }
+    } catch (error) {
+      console.error("Token verification failed:", error);
+      navigate("/admin-login");
+    }
+  }, [navigate]);
+  
 }
