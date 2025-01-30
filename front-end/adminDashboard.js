@@ -98,8 +98,8 @@ const AdminDashboard = () => {
     fetchDistributionData();
   }, []);
 
-  // Add new useEffect for fetching 6-month data
-  useEffect(() => {
+   // Add new useEffect for fetching 6-month data
+   useEffect(() => {
     const fetchSixMonthData = async () => {
       try {
         const token = localStorage.getItem("adminToken");
@@ -125,4 +125,61 @@ const AdminDashboard = () => {
 
     fetchSixMonthData();
   }, []);
+
+  // Add new useEffect for fetching today's total
+  useEffect(() => {
+    const fetchTodayTotal = async () => {
+      try {
+        const token = localStorage.getItem("adminToken");
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/distributions/total-distributed-today`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch today's total");
+        }
+
+        const data = await response.json();
+        setTodayTotal(data);
+      } catch (error) {
+        console.error("Error fetching today's total:", error);
+      }
+    };
+
+    fetchTodayTotal();
+  }, []);
+
+  // Add new useEffect for fetching most distributed fuel type
+  useEffect(() => {
+    const fetchMostDistributedFuel = async () => {
+      try {
+        const token = localStorage.getItem("adminToken");
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/distributions/most-distributed-fuel-type-today`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch most distributed fuel type");
+        }
+
+        const data = await response.json();
+        setMostDistributedFuel(data);
+      } catch (error) {
+        console.error("Error fetching most distributed fuel type:", error);
+      }
+    };
+
+    fetchMostDistributedFuel();
+  }, []);
+
 }
