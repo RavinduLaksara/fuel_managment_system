@@ -1,22 +1,22 @@
 // src/main/java/com/example/fuel_b/entity/FuelStation.java
 package com.example.fuel_managment_system.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 
 @Entity
 public class FuelStation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String address;
     private String phoneNumber;
-
     private String password;
 
+    private Integer status = 0; // Default value for status
 
     // Getters and setters
     public Long getId() {
@@ -57,5 +57,13 @@ public class FuelStation {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

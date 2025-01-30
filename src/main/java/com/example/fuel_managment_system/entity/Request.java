@@ -1,25 +1,27 @@
-// src/main/java/com/example/fuel_b/entity/Distributions.java
+// src/main/java/com/example/fuel_b/entity/Request.java
 package com.example.fuel_managment_system.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-public class Distributions {
+public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double fuelAmount;
-
-    private LocalDateTime timestamp;
-
     @ManyToOne
-    @JoinColumn(name = "fuel_station_id")
+    @JoinColumn(name = "fuelstation_id", nullable = false)
     private FuelStation fuelStation;
 
-    private String fuelType; // Add this line
+    @Column(nullable = false)
+    private double amount;
+
+    @Column(nullable = false)
+    private String fuelType;
+
+    @Column(nullable = false)
+    private String status;
 
     // Getters and setters
     public Long getId() {
@@ -30,22 +32,6 @@ public class Distributions {
         this.id = id;
     }
 
-    public double getFuelAmount() {
-        return fuelAmount;
-    }
-
-    public void setFuelAmount(double fuelAmount) {
-        this.fuelAmount = fuelAmount;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
     public FuelStation getFuelStation() {
         return fuelStation;
     }
@@ -54,11 +40,27 @@ public class Distributions {
         this.fuelStation = fuelStation;
     }
 
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
     public String getFuelType() {
         return fuelType;
     }
 
     public void setFuelType(String fuelType) {
         this.fuelType = fuelType;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
