@@ -70,4 +70,59 @@ const AdminDashboard = () => {
     }
   }, [navigate]);
   
+  // Add new useEffect for fetching distribution data
+  useEffect(() => {
+    const fetchDistributionData = async () => {
+      try {
+        const token = localStorage.getItem("adminToken");
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/distributions/total-fuel-last-three-days`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch distribution data");
+        }
+
+        const data = await response.json();
+        setDistributionData(data);
+      } catch (error) {
+        console.error("Error fetching distribution data:", error);
+      }
+    };
+
+    fetchDistributionData();
+  }, []);
+
+  // Add new useEffect for fetching 6-month data
+  useEffect(() => {
+    const fetchSixMonthData = async () => {
+      try {
+        const token = localStorage.getItem("adminToken");
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/distributions/total-fuel-last-six-months`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch 6-month data");
+        }
+
+        const data = await response.json();
+        setSixMonthData(data);
+      } catch (error) {
+        console.error("Error fetching 6-month data:", error);
+      }
+    };
+
+    fetchSixMonthData();
+  }, []);
 }
