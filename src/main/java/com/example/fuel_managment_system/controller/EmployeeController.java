@@ -1,12 +1,12 @@
 // src/main/java/com/example/fuel_b/controller/EmployeeController.java
 package com.example.fuel_managment_system.controller;
 
-import com.example.fuel_b.entity.Employee;
-import com.example.fuel_b.entity.Vehicle;
-import com.example.fuel_b.repository.VehicleRepository;
-import com.example.fuel_b.security.JwtTokenProvider;
-import com.example.fuel_b.service.EmployeeService;
-import com.example.fuel_b.service.VehicleService;
+import com.example.fuel_managment_system.entity.Employee;
+import com.example.fuel_managment_system.entity.Vehicle;
+import com.example.fuel_managment_system.repository.VehicleRepository;
+import com.example.fuel_managment_system.security.JwtTokenProvider;
+import com.example.fuel_managment_system.service.EmployeeService;
+import com.example.fuel_managment_system.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
