@@ -113,8 +113,74 @@ function AdminHistory() {
 
   return (
     <>
- // style
-    </>
+<Navbar brand="Admin" links={navLinks} />
+      <div className="p-8 bg-gray-50 min-h-screen mt-16">
+        <h2 className="text-gray-800 mb-8 text-2xl font-semibold">
+          Distribution History
+        </h2>
+
+        <div className="flex gap-4 mb-8 md:flex-row flex-col">
+          <select
+            value={filterFuelType}
+            onChange={(e) => setFilterFuelType(e.target.value)}
+            className="p-3 border border-gray-300 rounded-md min-w-[200px] bg-white text-base cursor-pointer focus:outline-none focus:border-blue-600"
+          >
+            <option value="all">All Fuel Types</option>
+            <option value="petrol">Petrol</option>
+            <option value="diesel">Diesel</option>
+          </select>
+
+          <select
+            value={filterDateRange}
+            onChange={(e) => setFilterDateRange(e.target.value)}
+            className="p-3 border border-gray-300 rounded-md min-w-[200px] bg-white text-base cursor-pointer focus:outline-none focus:border-blue-600"
+          >
+            <option value="all">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
+
+        <Table
+          columns={columns}
+          data={tableData.map((item) => ({
+            ...item,
+            "Fuel Amount": (
+              <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm font-medium">
+                {item["Fuel Amount"]}
+              </span>
+            ),
+          }))}
+        />
+
+        <div className="flex justify-center items-center gap-4 mt-8 md:flex-row flex-col">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            Previous
+          </Button>
+
+          <span className="text-base text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+
+          <Button
+            variant="outline"
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            Next
+          </Button>
+        </div>
+      </div>  
+        </>
   );
 }
 

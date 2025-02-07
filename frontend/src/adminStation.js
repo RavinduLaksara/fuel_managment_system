@@ -145,7 +145,81 @@ const AdminStations = () => {
 
   return (
     <>
-      // style
+      <Navbar brand="Admin" links={adminNavLinks} />
+      <div className="p-8 pt-20 bg-gray-50 min-h-screen">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">
+            Fuel Stations Management
+          </h1>
+          <Button variant="outline" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
+
+        {/* Add Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <StatCard
+            title="Total Stations"
+            value={stats.totalStations}
+            change="All registered stations"
+            period="Overall"
+          />
+          <StatCard
+            title="Pending Stations"
+            value={stats.pendingStations}
+            change="Awaiting approval"
+            period="Current"
+          />
+          <StatCard
+            title="Approved Stations"
+            value={stats.approvedStations}
+            change="Active stations"
+            period="Current"
+          />
+        </div>
+
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          Pending Approvals
+        </h2>
+        <Table
+          columns={["ID", "Name", "Address", "Phone Number", "Actions"]}
+          data={pendingStations.map((station) => ({
+            ID: station.id,
+            Name: station.name,
+            Address: station.address,
+            "Phone Number": station.phoneNumber,
+            Actions: (
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => handleApprove(station.id)}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
+                >
+                  Approve
+                </Button>
+                <Button
+                  onClick={() => handleReject(station.id)}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  Reject
+                </Button>
+              </div>
+            ),
+          }))}
+        />
+
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          Approved Stations
+        </h2>
+        <Table
+          columns={["ID", "Name", "Address", "Phone Number"]}
+          data={approvedStations.map((station) => ({
+            ID: station.id,
+            Name: station.name,
+            Address: station.address,
+            "Phone Number": station.phoneNumber,
+          }))}
+        />
+      </div>
     </>
   );
 };

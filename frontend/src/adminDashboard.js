@@ -477,7 +477,159 @@ const prepareFuelDistributionData = () => {
     { path: "/admin-history", label: "History" },
   ];
 
-  return (<>
-//style
-  </>)
-}
+  return (
+  <>
+ <Navbar brand="Admin" links={navLinks} />
+      <div className="p-8 pt-20 bg-gray-50 min-h-screen">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl text-gray-800">Business Dashboard</h1>
+          <div className="flex gap-4 items-center">
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+            >
+              Logout
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 max-w-9xl mx-auto">
+          {statsCards.map((stat, index) => (
+            <StatCard
+              key={index}
+              title={stat.title}
+              value={stat.value}
+              change={stat.change}
+              period={stat.period}
+            />
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-8xl">
+          <div className="bg-white p-6 rounded-lg border border-gray-300">
+            <BarChart
+              title="Fuel Distribution (3 Days)"
+              data={fuelDistributionData}
+              className={"max-h-fit sm:h-[300px]"}
+            />
+          </div>
+
+          <div className="bg-white p-6 rounded-lg border border-gray-300">
+            <h3 className="text-gray-600 text-lg mb-4">
+              Fuel Distribution Trends (6 Months)
+            </h3>
+            <div className="h-[300px]">
+              <Line
+                data={fuelTrendsData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  backgroundColor: "#fff",
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      grid: {
+                        color: "rgba(0, 0, 0, 0.06)",
+                        drawBorder: false,
+                      },
+                      border: {
+                        display: false,
+                      },
+                      ticks: {
+                        font: {
+                          family:
+                            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                          size: 12,
+                        },
+                        color: "#86868b",
+                        padding: 10,
+                        callback: (value) => `${value.toLocaleString()}L`,
+                      },
+                    },
+                    x: {
+                      grid: {
+                        display: false,
+                        drawBorder: false,
+                      },
+                      border: {
+                        display: false,
+                      },
+                      ticks: {
+                        font: {
+                          family:
+                            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                          size: 12,
+                        },
+                        color: "#86868b",
+                        padding: 10,
+                      },
+                    },
+                  },
+                  plugins: {
+                    legend: {
+                      position: "top",
+                      labels: {
+                        boxWidth: 28,
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        padding: 20,
+                        font: {
+                          family:
+                            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                          size: 12,
+                        },
+                      },
+                    },
+                    tooltip: {
+                      backgroundColor: "rgba(0, 0, 0, 0.8)",
+                      titleFont: {
+                        family:
+                          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                        size: 13,
+                      },
+                      bodyFont: {
+                        family:
+                          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                        size: 12,
+                      },
+                      padding: 12,
+                      cornerRadius: 8,
+                      callbacks: {
+                        label: function (context) {
+                          return `${
+                            context.dataset.label
+                          }: ${context.raw.toLocaleString()}L`;
+                        },
+                      },
+                    },
+                  },
+                  layout: {
+                    padding: {
+                      top: 20,
+                      right: 20,
+                      bottom: 20,
+                      left: 20,
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg border border-gray-300 mt-6">
+          <BarChart
+            title="Today's Pumped Amount by Each Fuel Station"
+            data={prepareStationsPumpedData()}
+            isHorizontal={true}
+            height="400px"
+            showLegend={false}
+          />
+        </div>
+      </div>
+  </>
+  );
+};
+
+export default AdminDashboard;

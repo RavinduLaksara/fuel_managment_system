@@ -194,7 +194,28 @@ const AdminDistributions = () => {
 
   return (
     <>
-// style
+ <Navbar brand="Admin" links={adminNavLinks} />
+
+<div className="pt-40 pb-10 ">
+  <Form
+    title="Create New Distribution"
+    description="Enter the details to create a new fuel distribution"
+    fields={
+      <>
+        {validationMessage.text && (
+          <ValidateMessage
+            message={validationMessage.text}
+            type={validationMessage.type}
+          />
+        )}
+        {formFields}
+      </>
+    }
+    buttons={formButtons}
+    onSubmit={handleSubmit}
+    layout="stack"
+  />
+</div>
     </>
   );
 };

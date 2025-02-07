@@ -104,9 +104,25 @@ const AdminLogin = () => {
     </>
   );
 
-  return (<>
-   // stye
-   </>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="flex flex-col items-center gap-5 p-5">
+        <div className="text-indigo-900">
+          <FaUserShield size={50} />
+        </div>
+        <h1 className="text-indigo-900 text-3xl font-semibold text-center m-0">
+          Administrator Portal
+        </h1>
+        <Form
+          title="Admin Login"
+          description="Please enter your administrator credentials"
+          fields={fields}
+          buttons={buttons}
+          onSubmit={handleSubmit}
+          layout="stack"
+        />
+      </div>
+    </div>
   );
 };
 

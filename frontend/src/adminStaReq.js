@@ -148,7 +148,53 @@ const AdminStaReq = () => {
 
   return (
     <>
- // style
+      <Navbar brand="Admin" links={navLinks} />
+      <div className="p-8 pt-20 bg-gray-50 min-h-screen">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 mt-6">
+          <StatCard
+            title="Total Requests"
+            value={requests.length}
+            change="All time"
+            period="Total requests in system"
+          />
+          <StatCard
+            title="Pending Requests"
+            value={pendingRequests.length}
+            change="Awaiting approval"
+            period="Need immediate action"
+          />
+          <StatCard
+            title="Approved Requests"
+            value={
+              approvedRejectedRequests.filter((req) => Number(req.status) === 1)
+                .length
+            }
+            change="Successfully processed"
+            period="All time approved"
+          />
+          <StatCard
+            title="Rejected Requests"
+            value={
+              approvedRejectedRequests.filter((req) => Number(req.status) === 2)
+                .length
+            }
+            change="Denied requests"
+            period="All time rejected"
+          />
+        </div>
+
+        <h2 className="text-2xl font-bold mb-6">Pending Requests</h2>
+        <Table
+          columns={pendingColumns}
+          data={formatTableData(pendingRequests, true)}
+        />
+
+        <h2 className="text-2xl font-bold mb-6 mt-12">Processed Requests</h2>
+        <Table
+          columns={approvedColumns}
+          data={formatTableData(approvedRejectedRequests)}
+        />
+      </div>
     </>
   );
 };
