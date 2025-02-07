@@ -182,4 +182,202 @@ const AdminDashboard = () => {
     fetchMostDistributedFuel();
   }, []);
 
+// Add new useEffect for fetching distinct stations
+useEffect(() => {
+  const fetchDistinctStations = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/distributions/distinct-fuel-stations-today`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch distinct stations");
+      }
+
+      const data = await response.json();
+      setDistinctStations(data);
+    } catch (error) {
+      console.error("Error fetching distinct stations:", error);
+    }
+  };
+
+  fetchDistinctStations();
+}, []);
+
+// Add new useEffect for fetching most active station
+useEffect(() => {
+  const fetchMostActiveStation = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/distributions/most-distributed-station-today`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch most active station");
+      }
+
+      const data = await response.json();
+      setMostActiveStation(data);
+    } catch (error) {
+      console.error("Error fetching most active station:", error);
+    }
+  };
+
+  fetchMostActiveStation();
+}, []);
+
+useEffect(() => {
+  const fetchStationsPumpedData = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/fuel-stations/total-pumped-today`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch stations pumped data");
+      }
+
+      const data = await response.json();
+      setStationsPumpedData(data);
+    } catch (error) {
+      console.error("Error fetching stations pumped data:", error);
+    }
+  };
+
+  fetchStationsPumpedData();
+}, []);
+
+// Add new useEffect for fetching 3-day pumped data
+useEffect(() => {
+  const fetchThreeDaysPumpedData = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/transactions/total-pumped-last-three-days`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch 3-day pumped data");
+      }
+
+      const data = await response.json();
+      setThreeDaysPumpedData(data);
+    } catch (error) {
+      console.error("Error fetching 3-day pumped data:", error);
+    }
+  };
+
+  fetchThreeDaysPumpedData();
+}, []);
+
+// Add new useEffect for fetching 6-month pumped data
+useEffect(() => {
+  const fetchSixMonthPumpedData = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/transactions/total-pumped-last-six-months`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch 6-month pumped data");
+      }
+
+      const data = await response.json();
+      setSixMonthPumpedData(data);
+    } catch (error) {
+      console.error("Error fetching 6-month pumped data:", error);
+    }
+  };
+
+  fetchSixMonthPumpedData();
+}, []);
+
+const handleLogout = () => {
+  localStorage.removeItem("adminToken");
+  navigate("/admin-login");
+};
+
+// Updated stats cards for fuel management
+const statsCards = [
+  {
+    title: "Today's Fuel Distribution",
+    value: `${todayTotal}L`,
+    change: "-",
+    period: "Today's total",
+  },
+  {
+    title: "Most Distributed Fuel Today",
+    value: `${mostDistributedFuel.amount}L`,
+    change: mostDistributedFuel.fuelType,
+    period: "Fuel type",
+  },
+  {
+    title: "Active Fuel Stations Today",
+    value: distinctStations,
+    change: "Distinct stations",
+    period: "Today's count",
+  },
+  {
+    title: "Most Active Station Today",
+    value: `${mostActiveStation.amount}L`,
+    change: mostActiveStation.stationName,
+    period: "Station name",
+  },
+];
+
+// Transform the date-based data into arrays for the chart
+const prepareFuelDistributionData = () => {
+  const dates = Object.keys(distributionData).sort();
+  const last3Dates = dates.slice(-3);
+  const values = last3Dates.map((date) => distributionData[date]);
+  const pumpedValues = last3Dates.map(
+    (date) => threeDaysPumpedData[date] || 0
+  );
+
+  return {
+    labels: last3Dates.map((date) => new Date(date).toLocaleDateString()),
+    datasets: [
+      {
+        label: "Distributed Fuel (L)",
+        data: values,
+        backgroundColor: "#4285f4",
+      },
+      {
+        label: "Pumped Fuel (L)",
+        data: pumpedValues,
+        backgroundColor: "#34a853",
+      },
+    ],
+  };
+};
+
 }
