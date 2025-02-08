@@ -7,13 +7,16 @@ import com.example.fuel_managment_system.repository.VehicleRepository;
 import com.example.fuel_managment_system.security.JwtTokenProvider;
 import com.example.fuel_managment_system.service.EmployeeService;
 import com.example.fuel_managment_system.service.VehicleService;
+import com.example.fuel_managment_system.util.TwilioUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -26,7 +29,7 @@ public class EmployeeController {
 
     @Autowired
     private VehicleRepository vehicleRepository;
-    
+
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -73,6 +76,13 @@ public class EmployeeController {
             int pumpedAmount = request.get("pumpedAmount");
 
             Vehicle updatedVehicle = vehicleService.updateWeekQuota(id, pumpedAmount);
+
+            // Send a message to the vehicle owner
+//            if (updatedVehicle.getPhoneNumber() != null) {
+//                String messageBody = "Dear User, you  have used " + pumpedAmount + " litres from your weekly quota.";
+//                TwilioUtil.sendMessage(updatedVehicle.getPhoneNumber(), messageBody);
+//            }
+
             return ResponseEntity.ok(updatedVehicle);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

@@ -13,7 +13,6 @@ import java.util.Map;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-
     @Query("SELECT SUM(t.pumpedAmount) FROM Transaction t WHERE t.fuelStation.id = :fuelStationId")
     double sumPumpedAmountByFuelStationId(Long fuelStationId);
 
@@ -67,5 +66,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query("SELECT t.fuelType, SUM(t.pumpedAmount) FROM Transaction t WHERE t.fuelStation.id = :fuelStationId GROUP BY t.fuelType")
     List<Object[]> findTotalPumpedAmountByFuelTypeAndFuelStationId(@Param("fuelStationId") Long fuelStationId);
+
+    @Query("SELECT t FROM Transaction t WHERE t.employee.id = :employeeId")
+    List<Transaction> findTransactionsByEmployeeId(@Param("employeeId") Long employeeId);
+
+
+
 }
 

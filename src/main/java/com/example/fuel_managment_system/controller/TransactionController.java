@@ -35,6 +35,8 @@ public class TransactionController {
         List<Transaction> transactions = transactionService.getAllTransactions();
         return ResponseEntity.ok(transactions);
     }
+
+
     @GetMapping("/total-pumped-by-fuel-type/{fuelStationId}")
     public ResponseEntity<Map<String, Long>> getTotalPumpedAmountByFuelType(@PathVariable Long fuelStationId) {
         List<Object[]> results = transactionService.getTotalPumpedAmountByFuelTypeAndFuelStationId(fuelStationId);
@@ -95,6 +97,10 @@ public class TransactionController {
         return ResponseEntity.ok(totalPumpedLastSevenDays);
     }
 
-
+    @GetMapping("/employee/{employeeId}")
+    public ResponseEntity<List<Map<String, Object>>> getTransactionsByEmployeeId(@PathVariable Long employeeId) {
+        List<Map<String, Object>> transactions = transactionService.getTransactionsByEmployeeId(employeeId);
+        return ResponseEntity.ok(transactions);
+    }
 
 }

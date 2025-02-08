@@ -98,6 +98,16 @@ public class TransactionService {
     public List<Object[]> getTotalPumpedAmountByFuelTypeAndFuelStationId(Long fuelStationId) {
         return transactionRepository.findTotalPumpedAmountByFuelTypeAndFuelStationId(fuelStationId);
     }
+    public List<Map<String, Object>> getTransactionsByEmployeeId(Long employeeId) {
+        return transactionRepository.findTransactionsByEmployeeId(employeeId).stream()
+                .map(t -> Map.of(
+                        "id", t.getId(),
+                        "pumpedAmount", t.getPumpedAmount(),
+                        "vehicle", t.getVehicle(),
+                        "timestamp", t.getTimestamp()
+                ))
+                .collect(Collectors.toList());
+    }
 
 
 }

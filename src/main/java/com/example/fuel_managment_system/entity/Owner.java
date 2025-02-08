@@ -1,3 +1,5 @@
+
+//to be used in the future
 package com.example.fuel_managment_system.entity;
 
 import jakarta.persistence.Entity;
