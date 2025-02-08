@@ -1,8 +1,8 @@
 // src/main/java/com/example/fuel_b/controller/RequestController.java
-package com.example.fuel_b.controller;
+package com.example.fuel_managment_system.controller;
 
-import com.example.fuel_b.entity.Request;
-import com.example.fuel_b.service.RequestService;
+import com.example.fuel_managment_system.entity.Request;
+import com.example.fuel_managment_system.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
