@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from "react";
-import Table from "./components/table";
-import Button from "./components/button";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./components/navbar";
-import StatCard from "./components/dataCard";
+import Form from "./components/form";
+import InputField from "./components/inputField";
+import Button from "./components/button";
+import ValidateMessage from "./components/validateMessage";
 
-const AdminStaReq = () => {
-  const [requests, setRequests] = useState([]);
+const AdminDistributions = () => {
+  const navigate = useNavigate();
+  const [stations, setStations] = useState([]);
+  const [validationMessage, setValidationMessage] = useState({
+    text: "",
+    type: "",
+  });
+  const [distribution, setDistribution] = useState({
+    fuelAmount: "",
+    timestamp: new Date().toISOString().slice(0, 16), // Format: YYYY-MM-DDTHH:mm
+    fuelStation: { id: "" },
+    fuelType: "",
+  });
 
-  const navLinks = [
+  const adminNavLinks = [
     { path: "/admin-dashboard", label: "Dashboard" },
     { path: "/admin-stations", label: "Stations" },
     { path: "/admin-distributions", label: "Distributions" },
@@ -16,187 +29,195 @@ const AdminStaReq = () => {
   ];
 
   useEffect(() => {
-    fetchRequests();
-  }, []);
-
-  const fetchRequests = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/requests/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-          },
+    const fetchStations = async () => {
+      try {
+        const token = localStorage.getItem("adminToken");
+        if (!token) {
+          navigate("/admin-login");
+          return;
         }
-      );
-      const data = await response.json();
-      console.log("Raw API response:", data); // Debug the exact API response
-      setRequests(data);
-    } catch (error) {
-      console.error("Error fetching requests:", error);
-    }
-  };
 
-  const handleStatusChange = async (request, status) => {
-    try {
-      await fetch(
-        `${process.env.REACT_APP_API_URL}/api/requests/${request.id}/status`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-          },
-          body: JSON.stringify({ status: status }),
-        }
-      );
-
-      if (status === 1) {
-        // Create distribution with correct format
-        await fetch(
-          `${process.env.REACT_APP_API_URL}/api/distributions/create`,
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/fuel-stations/all-with-status`,
           {
-            method: "POST",
             headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+              Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-              fuelAmount: Number(request.amount),
-              timestamp: new Date().toISOString(),
-              fuelStation: {
-                id: Number(request.fuelStation.id),
-              },
-              fuelType: request.fuelType,
-            }),
           }
         );
+        if (response.status === 401) {
+          navigate("/admin-login");
+          return;
+        }
+        if (!response.ok) throw new Error("Failed to fetch stations");
+        const data = await response.json();
+        setStations(data.filter((station) => station.status === 1));
+      } catch (error) {
+        console.error("Error fetching stations:", error);
+        setValidationMessage({
+          text: "Failed to fetch stations",
+          type: "error",
+        });
+      }
+    };
+    fetchStations();
+  }, [navigate]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "stationId") {
+      setDistribution({
+        ...distribution,
+        fuelStation: { id: value },
+      });
+    } else if (name === "fuelAmount") {
+      const numValue = value === "" ? "" : Math.max(0, Number(value));
+      setDistribution({
+        ...distribution,
+        [name]: numValue,
+      });
+    } else if (name === "timestamp") {
+      // Handle timestamp without timezone conversion
+      setDistribution({
+        ...distribution,
+        timestamp: value,
+      });
+    } else {
+      setDistribution({
+        ...distribution,
+        [name]: value,
+      });
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("adminToken");
+      if (!token) {
+        navigate("/admin-login");
+        return;
       }
 
-      fetchRequests();
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/distributions/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(distribution),
+        }
+      );
+
+      if (response.status === 401) {
+        navigate("/admin-login");
+        return;
+      }
+      if (!response.ok) {
+        throw new Error("Failed to create distribution");
+      }
+
+      setValidationMessage({
+        text: "Distribution created successfully!",
+        type: "success",
+      });
+      setTimeout(() => navigate("/admin-distributions"), 2000);
     } catch (error) {
-      console.error("Error updating status:", error);
+      console.error("Error creating distribution:", error);
+      setValidationMessage({
+        text: "Failed to create distribution",
+        type: "error",
+      });
     }
   };
 
-  const pendingColumns = [
-    "Station ID",
-    "Fuel Type",
-    "Amount",
-    "Status",
-    "Actions",
-  ];
-  const approvedColumns = ["Station ID", "Fuel Type", "Amount", "Status"];
+  const formFields = (
+    <>
+      <InputField
+        label="Fuel Amount"
+        type="number"
+        name="fuelAmount"
+        value={distribution.fuelAmount}
+        onChange={handleChange}
+        required={true}
+        placeholder="Enter fuel amount"
+        className="w-full"
+      />
+      <InputField
+        label="Timestamp"
+        type="datetime-local"
+        name="timestamp"
+        value={distribution.timestamp}
+        onChange={handleChange}
+        required={true}
+        className="w-full"
+      />
+      <InputField
+        label="Station Name"
+        type="select"
+        name="stationId"
+        value={distribution.fuelStation.id}
+        onChange={handleChange}
+        required={true}
+        className="w-full"
+      >
+        <option value="">Select Station</option>
+        {stations.map((station) => (
+          <option key={station.id} value={station.id}>
+            {station.name}
+          </option>
+        ))}
+      </InputField>
+      <InputField
+        label="Fuel Type"
+        type="select"
+        name="fuelType"
+        value={distribution.fuelType}
+        onChange={handleChange}
+        required={true}
+        className="w-full"
+      >
+        <option value="">Select Fuel Type</option>
+        <option value="Petrol">Petrol</option>
+        <option value="Diesel">Diesel</option>
+      </InputField>
+    </>
+  );
 
-  const formatTableData = (requests, includingActions = false) => {
-    console.log("Formatting requests:", requests); // Debug input
-    return requests.map((request) => {
-      // Log individual request to see its structure
-      console.log("Individual request:", request);
-
-      const rowData = {
-        "Station ID":
-          request.id_station || request.station_id || request.id || "N/A",
-        "Fuel Type": request.fuelType,
-        Amount: `${request.amount}L`,
-        Status: getStatusText(request.status),
-        "Transaction ID": request.id,
-      };
-
-      if (includingActions) {
-        rowData.Actions = (
-          <div className="flex gap-2">
-            <Button
-              onClick={() => handleStatusChange(request, 1)}
-              variant="primary"
-              className="w-24"
-            >
-              Approve
-            </Button>
-            <Button
-              onClick={() => handleStatusChange(request, 2)}
-              variant="secondary"
-              className="w-24"
-            >
-              Reject
-            </Button>
-          </div>
-        );
-      }
-
-      return rowData;
-    });
-  };
-
-  const getStatusText = (status) => {
-    switch (Number(status)) {
-      case 0:
-        return "Pending";
-      case 1:
-        return "Approved";
-      case 2:
-        return "Rejected";
-      default:
-        return "Unknown";
-    }
-  };
-
-  const pendingRequests = requests.filter((req) => Number(req.status) === 0);
-  const approvedRejectedRequests = requests.filter(
-    (req) => Number(req.status) > 0
+  const formButtons = (
+    <Button type="submit" variant="primary">
+      Create Distribution
+    </Button>
   );
 
   return (
     <>
-      <Navbar brand="Admin" links={navLinks} />
-      <div className="p-8 pt-20 bg-gray-50 min-h-screen">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 mt-6">
-          <StatCard
-            title="Total Requests"
-            value={requests.length}
-            change="All time"
-            period="Total requests in system"
-          />
-          <StatCard
-            title="Pending Requests"
-            value={pendingRequests.length}
-            change="Awaiting approval"
-            period="Need immediate action"
-          />
-          <StatCard
-            title="Approved Requests"
-            value={
-              approvedRejectedRequests.filter((req) => Number(req.status) === 1)
-                .length
-            }
-            change="Successfully processed"
-            period="All time approved"
-          />
-          <StatCard
-            title="Rejected Requests"
-            value={
-              approvedRejectedRequests.filter((req) => Number(req.status) === 2)
-                .length
-            }
-            change="Denied requests"
-            period="All time rejected"
-          />
-        </div>
+      <Navbar brand="Admin" links={adminNavLinks} />
 
-        <h2 className="text-2xl font-bold mb-6">Pending Requests</h2>
-        <Table
-          columns={pendingColumns}
-          data={formatTableData(pendingRequests, true)}
-        />
-
-        <h2 className="text-2xl font-bold mb-6 mt-12">Processed Requests</h2>
-        <Table
-          columns={approvedColumns}
-          data={formatTableData(approvedRejectedRequests)}
+      <div className="pt-40 pb-10 ">
+        <Form
+          title="Create New Distribution"
+          description="Enter the details to create a new fuel distribution"
+          fields={
+            <>
+              {validationMessage.text && (
+                <ValidateMessage
+                  message={validationMessage.text}
+                  type={validationMessage.type}
+                />
+              )}
+              {formFields}
+            </>
+          }
+          buttons={formButtons}
+          onSubmit={handleSubmit}
+          layout="stack"
         />
       </div>
     </>
   );
 };
 
-export default AdminStaReq;
+export default AdminDistributions;
