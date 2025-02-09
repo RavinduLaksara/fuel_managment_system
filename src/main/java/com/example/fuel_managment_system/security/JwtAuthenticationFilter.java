@@ -1,8 +1,10 @@
 package com.example.fuel_managment_system.security;
 
+import com.example.fuel_managment_system.entity.Admin;
 import com.example.fuel_managment_system.entity.Employee;
 import com.example.fuel_managment_system.entity.FuelStation;
 import com.example.fuel_managment_system.entity.Vehicle;
+import com.example.fuel_managment_system.repository.AdminRepository;
 import com.example.fuel_managment_system.repository.EmployeeRepository;
 import com.example.fuel_managment_system.repository.FuelStationRepository;
 import com.example.fuel_managment_system.repository.VehicleRepository;
@@ -49,6 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private FuelStationRepository fuelStationRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -110,6 +114,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // Logging the validated user
                     System.out.println("User validated successfully: " + indentifier);
                 }
+
+            //validation if user is in the admin repository
+            Admin admin = adminRepository.findByUsername(indentifier);
+            if (admin != null) {
+                UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                        admin.getUsername(), admin.getPassword(), new ArrayList<>());
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                // Logging the validated user
+                System.out.println("Admin validated successfully: " + indentifier);
+            }
+
 
         } else {
             System.out.println("JWT is invalid or not present");
